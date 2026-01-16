@@ -59,17 +59,17 @@ Key points:
 
   - The `is_admin` flag is required to access restricted logs, which gets set upon successful admin login.
 
-  ## 2. Admin Authentication
+## 2. Admin Authentication
 
-  ### Login Logic
+### Login Logic
 
-  The service provides an admin login option with a fixed password check:
+The service provides an admin login option with a fixed password check:
 
-  ```c
-  if (strncmp(pw, "supersecret\n", 12) == 0) {
-      is_admin = 1;
-  }
-  ```
+```c
+if (strncmp(pw, "supersecret\n", 12) == 0) {
+    is_admin = 1;
+}
+```
 
 Observations:
 
@@ -117,4 +117,5 @@ io.interactive()              # Interactive shell (flag output)
 ## Key Takeaways
 
 - Understanding authentication flow is essential
+
 - Admin-only data may be directly accessible after successful login
