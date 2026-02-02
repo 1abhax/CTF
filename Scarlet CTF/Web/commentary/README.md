@@ -39,7 +39,7 @@ lower-layer protocols, such as ICMP, may behave differently and bypass the proxy
 
 ### 2. Exploitation
 
-`The `ping` command operates at **OSI Layer 3** using the **ICMP** protocol, while reverse proxies
+The `ping` command operates at **OSI Layer 3** using the **ICMP** protocol, while reverse proxies
 operate at **Layer 7** and only handle HTTP traffic. As a result, ICMP traffic is not processed
 by the reverse proxy.
 
@@ -56,7 +56,7 @@ We connecting address.
 The page displays the default Nginx welcome page.indicating that the backend server is accessible
 and that the default configuration was left exposed.
 
-![](image\img1.png)
+![](image/img1.png)
 
 Inspecting the page source of the default Nginx site reveals hidden HTML comments:
 
@@ -80,3 +80,4 @@ Inspecting the page source of the default Nginx site reveals hidden HTML comment
 - ICMP (Internet Control Message Protocol)
 
 - Nginx Reverse Proxy behavior
+
