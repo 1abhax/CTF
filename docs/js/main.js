@@ -40,7 +40,7 @@ async function loadDir(path="", container){
 
             div.onclick = () => {
                 document.getElementById("content").innerHTML =
-                `<iframe src="${item.html_url}" width="100%" height="900"></iframe>`;
+                `<iframe src="${item.download_url}" width="100%" height="900"></iframe>`;
             };
 
             container.appendChild(div);
