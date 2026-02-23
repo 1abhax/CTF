@@ -1,6 +1,26 @@
 async function init() {
-  const res = await fetch("data/tree.json");
-  const data = await res.json();
+  const timeline = document.getElementById("timeline");
+
+  const updates = [
+    {
+      tag: "#CTF",
+      title: "Initial setup",
+      date: "2026-02-23"
+    }
+  ];
+
+  updates.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "timeline-item";
+    div.innerHTML = `
+      <div class="tag">${item.tag}</div>
+      <h3>${item.title}</h3>
+      <small>${item.date}</small>
+    `;
+  timeline.appendChild(div);
+});
+
+init();
 
   const allItems = [];
 
@@ -33,10 +53,3 @@ async function init() {
     timeline.appendChild(div);
   });
 }
-const backgrounds = [
-  "assets/bg/bg1.jpg"
-];
-
-document.body.style.backgroundImage =
-  `url(${backgrounds[Math.floor(Math.random()*backgrounds.length)]})`;
-init();

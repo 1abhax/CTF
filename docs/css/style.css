@@ -2,12 +2,7 @@
 body {
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,sans-serif;
-  background: 
-    linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)),
-    url("../assets/bg/bg1.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  background: #f5f6f8;
   display:flex;
   justify-content:center;
   align-items:center;
