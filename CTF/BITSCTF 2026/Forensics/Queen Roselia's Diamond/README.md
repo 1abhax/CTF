@@ -1,4 +1,4 @@
-# *Queen Roselia's Diamond**
+# **Queen Roselia's Diamond**
 
 > This write-up documents a deliberately vulnerable lab / CTF-style service.  
 > All techniques are presented for educational purposes only.
