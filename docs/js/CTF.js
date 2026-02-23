@@ -2,33 +2,35 @@ const USER = "1abhax";
 const REPO = "sec-archive";
 const BRANCH = "main";
 
-// 只找固定位置：CTF/<event>/<category>/<challenge>/README.md
+// 固定結構：CTF/<event>/<category>/<challenge>/README.md
 export async function loadCTFEvent(eventName) {
   const content = document.getElementById("content");
-const toc = document.getElementById("tocContent");
+  const tocContent = document.getElementById("tocContent");
 
   content.innerHTML = `<h2>${escapeHTML(eventName)}</h2><p class="muted">Loading...</p>`;
-  toc.innerHTML = `<h3>Challenges</h3><p class="muted">Loading...</p>`;
+  tocContent.innerHTML = `<p class="muted">Loading...</p>`;
 
   const readmes = await collectReadmesFixed(eventName);
 
   if (!readmes.length) {
     content.innerHTML = `<h2>${escapeHTML(eventName)}</h2><p>No README found.</p>`;
-    toc.innerHTML = `<h3>Challenges</h3><p class="muted">No entries.</p>`;
+    tocContent.innerHTML = `<p class="muted">No entries.</p>`;
     return;
   }
 
-  // 右側：只列出有 README 的 challenge，且可點擊切換
   renderChallengeList(readmes);
 
-  // 中間：自動載入第一個 README
+  // auto load first
   await loadFile(readmes[0].path);
+
+  // set first active (if not already)
+  const first = tocContent.querySelector(".challenge-item");
+  if (first) first.classList.add("active");
 }
 
 async function collectReadmesFixed(eventName) {
   const result = [];
   const categories = await fetchDir(`CTF/${eventName}`);
-
   if (!Array.isArray(categories)) return result;
 
   for (const cat of categories) {
@@ -37,7 +39,6 @@ async function collectReadmesFixed(eventName) {
     const challenges = await fetchDir(cat.path);
     if (!Array.isArray(challenges)) continue;
 
-    // 固定下一層才是 challenge
     for (const chall of challenges) {
       if (!chall || chall.type !== "dir") continue;
 
@@ -55,7 +56,6 @@ async function collectReadmesFixed(eventName) {
     }
   }
 
-  // 你可以想要固定排序：先 category，再 challenge
   result.sort((a, b) => {
     const c = a.category.localeCompare(b.category);
     return c !== 0 ? c : a.challenge.localeCompare(b.challenge);
@@ -67,29 +67,28 @@ async function collectReadmesFixed(eventName) {
 async function fetchDir(path) {
   const url = `https://api.github.com/repos/${USER}/${REPO}/contents/${path}`;
   const res = await fetch(url);
-
-  // rate limit 或 404 時避免直接 throw 讓頁面死掉
   if (!res.ok) return [];
   return await res.json();
 }
 
 function renderChallengeList(readmes) {
-  const toc = document.getElementById("tocContent");
-toc.innerHTML = "";
+  const tocContent = document.getElementById("tocContent");
+  tocContent.innerHTML = "";
 
-  readmes.forEach((item, idx) => {
+  readmes.forEach((item) => {
     const div = document.createElement("div");
     div.className = "challenge-item";
     div.textContent = `${item.category} / ${item.challenge}`;
 
     div.addEventListener("click", async () => {
-      toc.querySelectorAll(".challenge-item.active").forEach(el => el.classList.remove("active"));
+      tocContent.querySelectorAll(".challenge-item.active")
+        .forEach(el => el.classList.remove("active"));
+
       div.classList.add("active");
       await loadFile(item.path);
     });
 
-    if (idx === 0) div.classList.add("active");
-    toc.appendChild(div);
+    tocContent.appendChild(div);
   });
 }
 
@@ -107,12 +106,8 @@ async function loadFile(path) {
 
   const md = await res.text();
 
-  // marked 設定（可再調）
   if (window.marked) {
-    marked.setOptions({
-      gfm: true,
-      breaks: false
-    });
+    marked.setOptions({ gfm: true, breaks: false });
   }
 
   content.innerHTML = marked.parse(md);
@@ -123,7 +118,7 @@ async function loadFile(path) {
 function fixRelativeAssetPaths(readmePath) {
   const baseDir = readmePath.replace(/README\.md$/i, "");
 
-  // 1) images: ![](img/...)
+  // images
   document.querySelectorAll("#content img").forEach(img => {
     const src = img.getAttribute("src") || "";
     if (!src) return;
@@ -135,7 +130,7 @@ function fixRelativeAssetPaths(readmePath) {
     );
   });
 
-  // 2) links: [x](src/...) 也修成 GitHub raw（如果你要點開下載）
+  // links -> raw
   document.querySelectorAll("#content a").forEach(a => {
     const href = a.getAttribute("href") || "";
     if (!href) return;

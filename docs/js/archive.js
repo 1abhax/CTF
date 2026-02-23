@@ -1,112 +1,93 @@
 import { loadCTFEvent } from "./CTF.js";
 
-const DEFAULT_SIDEBAR_PX = 280;
-const DEFAULT_TOC_PX = 300;
+const DEFAULT_SIDEBAR_PX = 300;
 
-function qs(id) {
-  return document.getElementById(id);
-}
-
-function setCSSVar(name, value) {
+function setVar(name, value) {
   document.documentElement.style.setProperty(name, value);
 }
 
-function saveLayoutWidths(sidebarPx, tocPx) {
-  localStorage.setItem("sec_archive_sidebar_px", String(sidebarPx));
-  localStorage.setItem("sec_archive_toc_px", String(tocPx));
-}
-
-function loadLayoutWidths() {
-  const s = parseInt(localStorage.getItem("sec_archive_sidebar_px") || "", 10);
-  const t = parseInt(localStorage.getItem("sec_archive_toc_px") || "", 10);
-  return {
-    sidebar: Number.isFinite(s) ? s : DEFAULT_SIDEBAR_PX,
-    toc: Number.isFinite(t) ? t : DEFAULT_TOC_PX
-  };
+function applyThemeFromStorage() {
+  if (localStorage.getItem("sec_archive_theme") === "dark") {
+    document.body.classList.add("dark");
+  }
 }
 
 function enableThemeToggle() {
-  const btn = qs("themeToggle");
+  const btn = document.getElementById("themeToggle");
   if (!btn) return;
-
-  const saved = localStorage.getItem("sec_archive_theme");
-  if (saved === "dark") document.body.classList.add("dark");
 
   btn.addEventListener("click", () => {
     document.body.classList.toggle("dark");
-    localStorage.setItem("sec_archive_theme", document.body.classList.contains("dark") ? "dark" : "light");
+    localStorage.setItem(
+      "sec_archive_theme",
+      document.body.classList.contains("dark") ? "dark" : "light"
+    );
   });
 }
 
 function enableHomeBtn() {
-  const btn = qs("homeBtn");
+  const btn = document.getElementById("homeBtn");
   if (!btn) return;
   btn.addEventListener("click", () => {
     window.location.href = "./index.html";
   });
 }
 
+function enableSidebarResize() {
+  const resizer = document.getElementById("resizerLeft");
+  const layoutRoot = document.getElementById("layoutRoot");
 
-function enableResizers() {
-  const resLeft = qs("resizerLeft");
-  const resRight = qs("resizerRight");
-  const layoutRoot = qs("layoutRoot");
+  let dragging = false;
 
-  let dragging = null;
+  resizer.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    dragging = true;
+    document.body.classList.add("dragging");
+  });
 
-  function onDown(which) {
-    return (e) => {
-      e.preventDefault();
-      dragging = which;
-      document.body.classList.add("dragging");
-    };
-  }
-
-  function onMove(e) {
+  window.addEventListener("mousemove", (e) => {
     if (!dragging) return;
-
     const rect = layoutRoot.getBoundingClientRect();
     const x = e.clientX - rect.left;
 
-    // total width available
-    const total = rect.width;
+    const newW = Math.max(240, Math.min(520, Math.round(x)));
+    setVar("--sidebar-w", `${newW}px`);
+    localStorage.setItem("sec_archive_sidebar_px", String(newW));
+  });
 
-    if (dragging === "left") {
-      // Sidebar width = x
-      const newSidebar = Math.max(200, Math.min(520, Math.round(x)));
-      setCSSVar("--sidebar-w", `${newSidebar}px`);
-      saveLayoutWidths(newSidebar, getTocWidth());
-    } else if (dragging === "right") {
-      // Toc width = total - x
-      const newToc = Math.max(220, Math.min(520, Math.round(total - x)));
-      setCSSVar("--toc-w", `${newToc}px`);
-      saveLayoutWidths(getSidebarWidth(), newToc);
-    }
-  }
-
-  function onUp() {
+  window.addEventListener("mouseup", () => {
     if (!dragging) return;
-    dragging = null;
+    dragging = false;
     document.body.classList.remove("dragging");
-  }
+  });
+}
 
-  function getSidebarWidth() {
-    const v = getComputedStyle(document.documentElement).getPropertyValue("--sidebar-w").trim();
-    return parseInt(v.replace("px", ""), 10) || DEFAULT_SIDEBAR_PX;
-  }
-  function getTocWidth() {
-    const v = getComputedStyle(document.documentElement).getPropertyValue("--toc-w").trim();
-    return parseInt(v.replace("px", ""), 10) || DEFAULT_TOC_PX;
-  }
+function applySidebarWidth() {
+  const s = parseInt(localStorage.getItem("sec_archive_sidebar_px") || "", 10);
+  setVar("--sidebar-w", `${Number.isFinite(s) ? s : DEFAULT_SIDEBAR_PX}px`);
+}
 
-  resLeft?.addEventListener("mousedown", onDown("left"));
-  resRight?.addEventListener("mousedown", onDown("right"));
-  window.addEventListener("mousemove", onMove);
-  window.addEventListener("mouseup", onUp);
+function enableTocCollapse() {
+  const layout = document.getElementById("layoutRoot");
+  const btn = document.getElementById("tocToggleBtn");
+  const handle = document.getElementById("tocHandle");
+
+  const toggle = () => {
+    layout.classList.toggle("toc-collapsed");
+    const collapsed = layout.classList.contains("toc-collapsed");
+
+    // header button icon
+    btn.textContent = collapsed ? "⮞" : "⮜";
+    // handle icon
+    handle.textContent = collapsed ? "⮞" : "⮜";
+  };
+
+  btn.addEventListener("click", toggle);
+  handle.addEventListener("click", toggle);
 }
 
 async function buildSidebarCTF() {
-  const sidebar = qs("sidebar");
+  const sidebar = document.getElementById("sidebar");
   sidebar.innerHTML = "";
 
   const titleRow = document.createElement("div");
@@ -118,7 +99,6 @@ async function buildSidebarCTF() {
 
   const foldBtn = document.createElement("button");
   foldBtn.className = "mini-btn";
-  foldBtn.id = "foldCTF";
   foldBtn.textContent = "▾";
   foldBtn.title = "Collapse/Expand";
 
@@ -135,7 +115,6 @@ async function buildSidebarCTF() {
     foldBtn.textContent = open ? "▾" : "▸";
   });
 
-  // order list
   const res = await fetch("./data/order_CTF.json");
   const data = await res.json();
 
@@ -145,10 +124,8 @@ async function buildSidebarCTF() {
     node.textContent = name;
 
     node.addEventListener("click", async () => {
-      // highlight selected event in sidebar
       sidebar.querySelectorAll(".node.active").forEach(el => el.classList.remove("active"));
       node.classList.add("active");
-
       await loadCTFEvent(name);
     });
 
@@ -156,27 +133,21 @@ async function buildSidebarCTF() {
   });
 }
 
-function applyInitialLayout() {
-  const { sidebar, toc } = loadLayoutWidths();
-  setCSSVar("--sidebar-w", `${sidebar}px`);
-  setCSSVar("--toc-w", `${toc}px`);
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
-  applyInitialLayout();
+  applyThemeFromStorage();
+  applySidebarWidth();
+
   enableThemeToggle();
   enableHomeBtn();
-  enableResizers();
+  enableSidebarResize();
   enableTocCollapse();
-  await buildSidebarCTF();
-});
-function enableTocCollapse() {
-  const btn = document.getElementById("tocToggleBtn");
-  const layout = document.getElementById("layoutRoot");
-  if (!btn || !layout) return;
 
-  btn.addEventListener("click", () => {
-    layout.classList.toggle("toc-collapsed");
-    btn.textContent = layout.classList.contains("toc-collapsed") ? "⮞" : "⮜";
-  });
-}
+  await buildSidebarCTF();
+
+  const hash = decodeURIComponent(location.hash.slice(1)).trim();
+  if (hash) {
+    const nodes = [...document.querySelectorAll("#sidebar .node")];
+    const node = nodes.find(n => n.textContent.trim() === hash);
+    if (node) node.click();
+  }
+});

@@ -16,30 +16,36 @@
     </div>
 
     <div class="topbar-right">
-      <button class="icon-btn" id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">🌓</button>
+      <button class="icon-btn" id="themeToggle" title="Theme" aria-label="Theme">🌓</button>
     </div>
   </header>
 
-  <div class="archive-layout" id="layoutRoot">
-    <aside id="sidebar" class="panel"></aside>
+  <div class="archive-shell">
+    <div class="archive-layout" id="layoutRoot">
+      <!-- 左 -->
+      <aside id="sidebar" class="panel"></aside>
 
-    <!-- 拖拉把手（左/中） -->
-    <div class="resizer" id="resizerLeft" title="Drag to resize"></div>
+      <!-- resize left -->
+      <div class="resizer" id="resizerLeft" title="Drag"></div>
 
-    <main id="content" class="panel content-panel">
-      <h2>Select a CTF</h2>
-    </main>
+      <!-- 中 -->
+      <main id="content" class="panel content-panel">
+        <h2>Select a CTF</h2>
+      </main>
 
-    <!-- 拖拉把手（中/右） -->
-    <div class="resizer" id="resizerRight" title="Drag to resize"></div>
+      <!-- 右：固定寬度欄位，但內容是卡片 -->
+      <aside id="tocWrap" class="toc-wrap">
+        <div id="tocHandle" class="toc-handle" title="Toggle">⮜</div>
 
-<aside id="toc" class="panel">
-  <div class="toc-header">
-    <button id="toggleToc" class="mini-btn">⮜</button>
-    <span>Challenges</span>
-  </div>
-  <div id="tocContent"></div>
-</aside>
+        <div id="toc" class="panel toc-card">
+          <div class="toc-header">
+            <button id="tocToggleBtn" class="mini-btn" title="Collapse">⮜</button>
+            <span>Challenges</span>
+          </div>
+          <div id="tocContent"></div>
+        </div>
+      </aside>
+    </div>
   </div>
 
   <script type="module" src="./js/archive.js"></script>
