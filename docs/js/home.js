@@ -1,5 +1,3 @@
-// home.js
-
 async function init() {
   const timeline = document.getElementById("timeline");
 
