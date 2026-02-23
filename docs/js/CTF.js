@@ -1,23 +1,29 @@
 // CTF.js
 
-const USER = "你的GitHub帳號";
+const USER = "1abhax";
 const REPO = "sec-archive";
 const BRANCH = "main";
 
-export async function loadCTF() {
+export async function loadCTF(eventName = null) {
   const sidebar = document.getElementById("sidebar");
   const content = document.getElementById("content");
+
+  const basePath = eventName
+    ? `CTF/${eventName}`
+    : "CTF";
 
   sidebar.innerHTML = "<h3>CTF</h3>";
   content.innerHTML = "<h2>Loading...</h2>";
 
   const readmes = [];
-  await scanDirectory("CTF", readmes);
+  await scanDirectory(basePath, readmes);
 
   sidebar.innerHTML = "<h3>CTF</h3>";
 
   readmes.forEach(path => {
     const parts = path.split("/");
+
+    // 結構: CTF / LACTF / Web / challenge / README.md
     const category = parts[2];
     const challenge = parts[3];
 
@@ -39,6 +45,7 @@ async function scanDirectory(path, result) {
   const res = await fetch(
     `https://api.github.com/repos/${USER}/${REPO}/contents/${path}`
   );
+
   const data = await res.json();
 
   for (const item of data) {
@@ -62,6 +69,7 @@ async function loadFile(path) {
   const res = await fetch(
     `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/${path}`
   );
+
   const text = await res.text();
 
   content.innerHTML = marked.parse(text);
