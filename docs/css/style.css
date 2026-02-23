@@ -92,15 +92,19 @@ body.dragging{
   background: var(--hover);
 }
 
-.layout {
+/* index layout: 左卡片 + 右內容 */
+.layout{
   display: flex;
-  min-height: calc(100vh - 56px);
+  min-height: 100vh;
+  width: 100%;
 }
 
-.archive-layout {
+/* archive layout: 三欄 grid（你原本那套） */
+.archive-layout{
   display: grid;
   grid-template-columns: var(--sidebar-w) var(--resizer-w) 1fr var(--resizer-w) var(--toc-w);
-  min-height: calc(100vh - 56px);
+  min-height: 100vh;
+  width: 100%;
 }
 
 

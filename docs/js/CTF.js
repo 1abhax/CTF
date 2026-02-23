@@ -74,7 +74,7 @@ async function fetchDir(path) {
 }
 
 function renderChallengeList(readmes) {
-  const toc = document.getElementById("toc");
+  const toc = document.getElementById("tocContent");
 toc.innerHTML = "";
 
   readmes.forEach((item, idx) => {

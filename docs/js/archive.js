@@ -171,17 +171,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   await buildSidebarCTF();
 });
 function enableTocCollapse() {
-  const btn = document.getElementById("toggleToc");
+  const btn = document.getElementById("tocToggleBtn");
   const layout = document.getElementById("layoutRoot");
-  
-
-  if (!btn) return;
+  if (!btn || !layout) return;
 
   btn.addEventListener("click", () => {
     layout.classList.toggle("toc-collapsed");
-
-    btn.textContent = layout.classList.contains("toc-collapsed")
-      ? "⮞"
-      : "⮜";
+    btn.textContent = layout.classList.contains("toc-collapsed") ? "⮞" : "⮜";
   });
 }
