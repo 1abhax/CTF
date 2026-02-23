@@ -1,36 +1,68 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>1abhax CTF Writeups</title>
 
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 </head>
+
 <body>
+  <header id="topbar">
+    <button id="toggleSidebar" aria-label="Toggle sidebar" title="Toggle sidebar">☰</button>
 
-<header id="topbar">
-  <button id="toggleSidebar">☰</button>
-  <div class="logo">1abhax</div>
-  <div class="subtitle">CTF Writeups Archive</div>
-</header>
+    <div class="brand">
+      <div class="logo">1abhax</div>
+      <div class="subtitle">CTF Writeups Archive</div>
+    </div>
 
-<div id="layout">
-  <aside id="sidebar"></aside>
-
-  <main id="main-content">
-    <article id="content">
-      <div class="welcome">
-        👈 選擇左側題目開始閱讀
+    <div class="topbar-actions">
+      <div class="search-wrap">
+        <input id="searchBox" type="search" placeholder="Search folders..." autocomplete="off" />
+        <button id="clearSearch" class="icon-btn" title="Clear">✕</button>
       </div>
-    </article>
 
-  </main>
-</div>
+      <button id="toggleTheme" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">◐</button>
+      <a id="repoLink" class="icon-btn link-btn" title="Open GitHub repo" target="_blank" rel="noreferrer">↗</a>
+    </div>
+  </header>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="js/main.js"></script>
+  <div id="layout">
+    <aside id="sidebar" aria-label="Sidebar navigation">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Browse</div>
+        <div id="sidebarHint" class="sidebar-hint">Loading…</div>
+      </div>
+      <div id="sidebarTree"></div>
+    </aside>
+
+    <main id="main-content">
+      <article id="content">
+        <div class="welcome">
+          <div class="welcome-title">CTF Writeups</div>
+          <div class="welcome-subtitle">從左側選單選擇一個題目（README.md）開始閱讀。</div>
+          <div class="welcome-tip">
+            Tips：可用上方 Search 快速過濾資料夾；右側會自動產生 TOC（標題目錄）。
+          </div>
+        </div>
+      </article>
+
+      <aside id="toc" aria-label="Table of contents">
+        <div class="toc-head">
+          <div class="toc-title">On this page</div>
+          <div id="tocMeta" class="toc-meta"></div>
+        </div>
+        <nav id="tocBody"></nav>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
