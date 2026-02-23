@@ -1,7 +1,7 @@
 ﻿// ==============================
 // 1abhax CTF Writeups main.js
 // ==============================
-
+const CACHE = {};
 let CFG = {};
 let ORDER = {};
 
@@ -21,15 +21,78 @@ window.onload = init;
 // 載入 config.json
 // ------------------------------
 
-async function loadConfig() {
-  const res = await fetch("data/config.json");
-  if (!res.ok) {
-    console.error("config.json 載入失敗");
+async function loadDirectory(path, container) {
+
+  // 如果已快取，直接渲染
+  if (CACHE[path]) {
+    renderItems(CACHE[path], container);
     return;
   }
-  CFG = await res.json();
-}
 
+  const apiUrl =
+    `https://api.github.com/repos/${CFG.user}/${CFG.repo}/contents/${path}?ref=${CFG.branch}`;
+
+  const res = await fetch(apiUrl, { cache: "force-cache" });
+
+  if (!res.ok) {
+    showError(`無法讀取資料夾: ${res.status}`);
+    return;
+  }
+
+  const items = await res.json();
+
+  // 存入快取
+  CACHE[path] = items;
+
+  renderItems(items, container);
+}
+function renderItems(items, container) {
+
+  container.innerHTML = "";
+
+  const sorted = sortItems(container.dataset?.path || "", items);
+
+  sorted.forEach(item => {
+
+    if (item.type === "dir") {
+
+      const folder = document.createElement("div");
+      folder.className = "folder";
+      folder.textContent = "📁 " + item.name;
+
+      const sub = document.createElement("div");
+      sub.style.marginLeft = "15px";
+      sub.style.display = "none";
+
+      folder.onclick = () => {
+        const opened = sub.style.display === "block";
+        sub.style.display = opened ? "none" : "block";
+
+        if (!opened && !sub.hasChildNodes()) {
+          loadDirectory(item.path, sub);
+        }
+      };
+
+      container.appendChild(folder);
+      container.appendChild(sub);
+    }
+
+    if (item.type === "file" &&
+        item.name.toLowerCase() === "readme.md") {
+
+      const file = document.createElement("div");
+      file.className = "file";
+      file.textContent = "📄 README";
+
+      file.onclick = () => {
+        openFile(item.path);
+      };
+
+      container.appendChild(file);
+    }
+
+  });
+}
 // ------------------------------
 // 載入 order.json（可選）
 // ------------------------------
@@ -147,7 +210,6 @@ async function openFile(path) {
   document.getElementById("content").innerHTML =
     `<div class="markdown-content">${html}</div>`;
 
-  generateTOC();
 }
 
 // ------------------------------
@@ -192,3 +254,7 @@ function showError(msg) {
   document.getElementById("content").innerHTML =
     `<div style="color:red;">❌ ${msg}</div>`;
 }
+
+document.getElementById("toggleSidebar").onclick = () => {
+  document.body.classList.toggle("sidebar-collapsed");
+};

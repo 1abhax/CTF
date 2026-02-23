@@ -122,3 +122,63 @@ body {
 #toc a:hover {
   color: #0f172a;
 }
+
+
+#toggleSidebar {
+  background: none;
+  border: none;
+  font-size: 20px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+body.sidebar-collapsed #sidebar {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body.sidebar-collapsed #content {
+  margin-left: 0;
+}
+
+.markdown-content pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 16px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 14px;
+}
+
+.markdown-content code {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+
+body {
+  background: #f1f5f9;
+}
+
+#content {
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+}
+
+.folder, .file {
+  border-radius: 12px;
+  padding: 8px 12px;
+  transition: 0.2s ease;
+}
+
+.folder:hover, .file:hover {
+  background: #dbeafe;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  color: #2563eb;
+}
