@@ -246,3 +246,30 @@ pre {
 .toc-item:hover {
   color:#111;
 }
+
+/* 右側面板 */
+#toc {
+  background: #f7f8fa;
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 260px;
+  font-size: 14px;
+}
+
+.challenge-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.challenge-item:hover {
+  background: #e6f0ff;
+  color: #0066ff;
+}
+
+.challenge-item.active {
+  background: #0066ff;
+  color: white;
+}
