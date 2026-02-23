@@ -3,18 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CTF Writeups</title>
+  <title>1abhax CTF Writeups</title>
+
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="sidebar"></div>
-  <div id="content">Select file</div>
 
-  <noscript>
-    <div class="error">本頁需要 JavaScript 才能載入 writeups。</div>
-  </noscript>
+<header id="topbar">
+  <div class="logo">1abhax</div>
+  <div class="subtitle">CTF Writeups Archive</div>
+</header>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="js/main.js"></script>
+<div id="layout">
+  <aside id="sidebar"></aside>
+
+  <main id="main-content">
+    <article id="content">
+      <div class="welcome">
+        👈 選擇左側題目開始閱讀
+      </div>
+    </article>
+
+    <aside id="toc"></aside>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
